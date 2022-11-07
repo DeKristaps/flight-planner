@@ -13,13 +13,13 @@ import java.time.format.DateTimeFormatter;
 public class AdminService {
 
     private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
 
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
     }
 
-    public Flight addFlightRequest(AddFlightRequest addFlightRequest) {
+    public synchronized Flight addFlightRequest(AddFlightRequest addFlightRequest) {
         Flight flight = createFlightFrom(addFlightRequest);
         if (isExistingFlight(flight)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cant add the same flight twice");
@@ -29,21 +29,23 @@ public class AdminService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arrival time is before departure time");
         } else {
             this.adminRepository.addFlight(flight);
+            if (!adminRepository.getAirports().contains(addFlightRequest.getFrom())) {
+                this.adminRepository.addAirport(addFlightRequest.getFrom());
+            }
+            if (!adminRepository.getAirports().contains(addFlightRequest.getTo())) {
+                this.adminRepository.addAirport(addFlightRequest.getTo());
+            }
             return flight;
         }
-    }
-
-    private long getNewFlightId() {
-        return this.adminRepository.getId();
     }
 
     private LocalDateTime dateTimeConverter(String dateTime) {
         return LocalDateTime.parse(dateTime, DATE_TIME_FORMATTER);
     }
 
-    private Flight createFlightFrom(AddFlightRequest addFlightRequest) {
+    private synchronized Flight createFlightFrom(AddFlightRequest addFlightRequest) {
         Flight flight = new Flight();
-        flight.setId(getNewFlightId());
+        flight.setId(this.adminRepository.getId());
         flight.setCarrier(addFlightRequest.getCarrier());
         flight.setFrom(addFlightRequest.getFrom());
         flight.setTo(addFlightRequest.getTo());
@@ -70,16 +72,12 @@ public class AdminService {
         return flight.getDepartureTime().isBefore(flight.getArrivalTime());
     }
 
-    public Flight findFlight(Long id) {
+    public synchronized Flight findFlight(Long id) {
         return this.adminRepository.getFlightList().stream().
                 filter(flight -> flight.getId() == id).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public void deleteFlight(Long id) {
-        try {
-            this.adminRepository.getFlightList().stream().
-                    filter(flight -> flight.getId() == id).findFirst().ifPresent(flightToDelete -> this.adminRepository.deleteFlight(flightToDelete));
-        } catch (NullPointerException ignored) {
-        }
+    public synchronized void deleteFlight(Long id) {
+        this.adminRepository.getFlightList().removeIf(flight -> flight.getId() == id);
     }
 }

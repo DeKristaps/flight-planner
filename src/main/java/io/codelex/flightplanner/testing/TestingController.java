@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestingController {
 
-    private TestingService testingService;
+    private final TestingService testingService;
 
     public TestingController(TestingService testingService) {
         this.testingService = testingService;
