@@ -11,27 +11,28 @@ import javax.validation.Valid;
 
 @RestController
 @Validated
+@RequestMapping("/admin-api")
 public class AdminController {
 
-    private AdminService adminService;
+    private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
-    @PutMapping("/admin-api/flights")
+    @PutMapping("/flights")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Flight addFlightRequest(@Valid @RequestBody AddFlightRequest addFlightRequest) {
         return adminService.addFlightRequest(addFlightRequest);
     }
 
-    @DeleteMapping("/admin-api/flights/{id}")
+    @DeleteMapping("/flights/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteFlight(@PathVariable Long id) {
         this.adminService.deleteFlight(id);
     }
 
-    @GetMapping("/admin-api/flights/{id}")
+    @GetMapping("/flights/{id}")
     public Flight getFlight(@PathVariable Long id) {
         return this.adminService.findFlight(id);
     }

@@ -1,5 +1,6 @@
 package io.codelex.flightplanner.admin;
 
+import io.codelex.flightplanner.admin.domain.Airport;
 import io.codelex.flightplanner.admin.domain.Flight;
 import org.springframework.stereotype.Repository;
 
@@ -14,11 +15,21 @@ public class AdminRepository {
 
     private List<Flight> flightList = new ArrayList<>();
 
+    private final List<Airport> airports = new ArrayList<>();
+
     public AdminRepository() {
     }
 
     public void addFlight(Flight flight) {
         this.flightList.add(flight);
+    }
+
+    public void addAirport(Airport airport) {
+        this.airports.add(airport);
+    }
+
+    public List<Airport> getAirports() {
+        return this.airports;
     }
 
     public void deleteFlight(Flight flight) {
@@ -30,12 +41,12 @@ public class AdminRepository {
         return id.getAndIncrement();
     }
 
-    public List<Flight> getFlightList() {
-        return flightList;
-    }
-
     public void setId(long id) {
         this.id = new AtomicInteger(0);
+    }
+
+    public List<Flight> getFlightList() {
+        return flightList;
     }
 
     public void setFlightList(List<Flight> flightList) {

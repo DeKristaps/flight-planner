@@ -13,7 +13,7 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/testing-api/**", " /api/").anonymous()
+                .antMatchers("/testing-api/**", "/api/**").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
