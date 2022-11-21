@@ -1,4 +1,4 @@
-package io.codelex.flightplanner.customerClient.domain;
+package io.codelex.flightplanner.flight.dto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

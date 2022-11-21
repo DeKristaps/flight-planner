@@ -1,4 +1,4 @@
-package io.codelex.flightplanner.admin.domain;
+package io.codelex.flightplanner.flight.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

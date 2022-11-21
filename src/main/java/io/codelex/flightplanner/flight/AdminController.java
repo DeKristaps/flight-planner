@@ -1,7 +1,7 @@
-package io.codelex.flightplanner.admin;
+package io.codelex.flightplanner.flight;
 
-import io.codelex.flightplanner.admin.domain.AddFlightRequest;
-import io.codelex.flightplanner.admin.domain.Flight;
+import io.codelex.flightplanner.flight.domain.Flight;
+import io.codelex.flightplanner.flight.dto.AddFlightRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,27 +14,27 @@ import javax.validation.Valid;
 @RequestMapping("/admin-api")
 public class AdminController {
 
-    private final AdminService adminService;
+    private final FlightService flightService;
 
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
+    public AdminController(FlightService flightService) {
+        this.flightService = flightService;
     }
 
     @PutMapping("/flights")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Flight addFlightRequest(@Valid @RequestBody AddFlightRequest addFlightRequest) {
-        return adminService.addFlightRequest(addFlightRequest);
+        return flightService.addFlightRequest(addFlightRequest);
     }
 
     @DeleteMapping("/flights/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteFlight(@PathVariable Long id) {
-        this.adminService.deleteFlight(id);
+        this.flightService.deleteFlight(id);
     }
 
     @GetMapping("/flights/{id}")
     public Flight getFlight(@PathVariable Long id) {
-        return this.adminService.findFlight(id);
+        return this.flightService.findFlight(id);
     }
 
 }

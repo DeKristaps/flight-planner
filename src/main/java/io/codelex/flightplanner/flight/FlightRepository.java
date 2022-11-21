@@ -1,7 +1,7 @@
-package io.codelex.flightplanner.admin;
+package io.codelex.flightplanner.flight;
 
-import io.codelex.flightplanner.admin.domain.Airport;
-import io.codelex.flightplanner.admin.domain.Flight;
+import io.codelex.flightplanner.flight.domain.Airport;
+import io.codelex.flightplanner.flight.domain.Flight;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
-public class AdminRepository {
+public class FlightRepository {
 
     private AtomicInteger id = new AtomicInteger(0);
 
@@ -17,7 +17,7 @@ public class AdminRepository {
 
     private final List<Airport> airports = new ArrayList<>();
 
-    public AdminRepository() {
+    public FlightRepository() {
     }
 
     public void addFlight(Flight flight) {
@@ -36,7 +36,6 @@ public class AdminRepository {
         this.flightList.remove(flight);
     }
 
-
     public int getId() {
         return id.getAndIncrement();
     }
@@ -53,3 +52,7 @@ public class AdminRepository {
         this.flightList = flightList;
     }
 }
+
+
+
+
