@@ -1,6 +1,6 @@
-package io.codelex.flightplanner.customerClient.domain;
+package io.codelex.flightplanner.flight.dto;
 
-import io.codelex.flightplanner.admin.domain.Airport;
+import io.codelex.flightplanner.flight.domain.Airport;
 
 import java.time.LocalDate;
 import java.util.Objects;

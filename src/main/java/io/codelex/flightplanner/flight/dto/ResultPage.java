@@ -1,6 +1,6 @@
-package io.codelex.flightplanner.customerClient.domain;
+package io.codelex.flightplanner.flight.dto;
 
-import io.codelex.flightplanner.admin.domain.Flight;
+import io.codelex.flightplanner.flight.domain.Flight;
 
 import java.util.ArrayList;
 import java.util.List;
