@@ -1,14 +1,16 @@
-package io.codelex.flightplanner.flight;
+package io.codelex.flightplanner.flight.controller;
 
 import io.codelex.flightplanner.flight.domain.Airport;
 import io.codelex.flightplanner.flight.domain.Flight;
 import io.codelex.flightplanner.flight.dto.ResultPage;
 import io.codelex.flightplanner.flight.dto.SearchFlightsRequest;
+import io.codelex.flightplanner.flight.service.FlightService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
 
 @RestController
 @Validated
