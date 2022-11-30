@@ -5,6 +5,7 @@ import io.codelex.flightplanner.flight.domain.Airport;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class AddFlightRequest {
 
@@ -67,6 +68,19 @@ public class AddFlightRequest {
 
     public void setArrivalTime(String arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddFlightRequest that = (AddFlightRequest) o;
+        return from.equals(that.from) && to.equals(that.to) && carrier.equals(that.carrier) && departureTime.equals(that.departureTime) && arrivalTime.equals(that.arrivalTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to, carrier, departureTime, arrivalTime);
     }
 
     @Override
