@@ -43,13 +43,7 @@ public class FlightDBService implements FlightService {
 
         Flight flight = createFlightFrom(addFlightRequest);
 
-        Example<Flight> flightMatcher = Example.of(flight, ExampleMatcher.matching()
-                .withIgnorePaths("id")
-                .withMatcher("from_airport", ignoreCase())
-                .withMatcher("to_airport", ignoreCase())
-                .withMatcher("carrier", ignoreCase())
-                .withMatcher("departure_time", ignoreCase())
-                .withMatcher("arrival_time", ignoreCase()));
+        Example<Flight> flightMatcher = Example.of(flight, ExampleMatcher.matching().withIgnorePaths("id").withMatcher("from_airport", ignoreCase()).withMatcher("to_airport", ignoreCase()).withMatcher("carrier", ignoreCase()).withMatcher("departure_time", ignoreCase()).withMatcher("arrival_time", ignoreCase()));
 
         if (flightRepository.exists(flightMatcher)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cant add the same flight twice");
@@ -108,13 +102,8 @@ public class FlightDBService implements FlightService {
     @Override
     public List<Airport> getAirport(String searchParam) {
         String search = searchParam.replaceAll("[^a-zA-Z\\d\\s:]", "").toUpperCase().trim();
-        List<Airport> airports = this.airportRepository.findAll();
 
-        return airports.stream().filter(airport ->
-                        airport.getAirport().toUpperCase().startsWith(search) ||
-                                airport.getCity().toUpperCase().startsWith(search) ||
-                                airport.getCountry().toUpperCase().startsWith(search))
-                .findAny().stream().toList();
+        return this.airportRepository.getAirportQuery(search);
     }
 
     @Override
@@ -124,13 +113,13 @@ public class FlightDBService implements FlightService {
         if (searchFlightsRequest.getFrom().equalsIgnoreCase(searchFlightsRequest.getTo())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Departure airport and destination airport are the same");
         }
-        this.flightRepository.findAll().forEach(flight -> {
-            if (flight.getFrom().equals(searchFlight.getFrom()) &&
-                    flight.getTo().equals(searchFlight.getTo()) &&
-                    flight.getDepartureTime().isAfter(searchFlight.getDepartureDate().atStartOfDay())) {
-                resultPage.setItems(flight);
-            }
-        });
+
+        List<Flight> flightList = this.flightRepository.getFlightQuery(
+                searchFlight.getFrom(),
+                searchFlight.getTo(),
+                searchFlight.getDepartureDate());
+
+        flightList.forEach(resultPage::setItems);
         resultPage.setTotalItems();
         resultPage.setPage();
 
@@ -141,10 +130,12 @@ public class FlightDBService implements FlightService {
     @Override
     public SearchFlight createSearchFlight(SearchFlightsRequest searchFlightsRequest) {
         SearchFlight searchFlight = new SearchFlight();
-        Airport formAirport = this.airportRepository.findAll().stream()
-                .filter(airport -> airport.getAirport().equals(searchFlightsRequest.getFrom())).findFirst().orElse(null);
-        Airport toAirport = this.airportRepository.findAll().stream()
-                .filter(airport -> airport.getAirport().equals(searchFlightsRequest.getTo())).findFirst().orElse(null);
+        Airport formAirport = this.airportRepository.getAirportQuery(searchFlightsRequest.getFrom())
+                .stream().filter(airport -> airport.getAirport().equals(searchFlightsRequest.getFrom()))
+                .findFirst().orElse(null);
+        Airport toAirport = this.airportRepository.getAirportQuery(searchFlightsRequest.getTo())
+                .stream().filter(airport -> airport.getAirport().equals(searchFlightsRequest.getTo()))
+                .findFirst().orElse(null);
 
         if (formAirport != null && toAirport != null) {
             searchFlight.setFrom(formAirport);
